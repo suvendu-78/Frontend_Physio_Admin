@@ -9,6 +9,9 @@ import Clinics from "../pages/admin/Clinics";
 import Services from "../pages/admin/Services";
 import Enquiries from "../pages/admin/Enquiries";
 import Notifications from "../pages/admin/Notifications";
+import Payments from "../pages/admin/Payments";
+import Reports from "../pages/admin/Reports";
+import Settings from "../pages/admin/Settings";
 
 export default function AppRoutes() {
   return (
@@ -34,6 +37,9 @@ export default function AppRoutes() {
           <Route path="services" element={<Services />} />
           <Route path="enquiries" element={<Enquiries />} />
           <Route path="notifications" element={<Notifications />} />
+          <Route path="payments" element={<Payments />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>
