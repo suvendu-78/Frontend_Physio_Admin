@@ -12,13 +12,29 @@ import Notifications from "../pages/admin/Notifications";
 import Payments from "../pages/admin/Payments";
 import Reports from "../pages/admin/Reports";
 import Settings from "../pages/admin/Settings";
+import AdminLanding from "../pages/AdminLanding";
+import AdminLogin from "../pages/AdminLogin";
+import AdminSignup from "../pages/AdminSignup";
+import AdminForgotPassword from "../pages/AdminForgotPassword";
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Public Website */}
-        <Route path="/" element={<h1>Home</h1>} />
+        {/* <Route path="/" element={<h1>Home</h1>} /> */}
+        {/* Landing Page */}
+        <Route path="/" element={<AdminLanding />} />
+
+        {/* Authentication */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        <Route path="/admin/signup" element={<AdminSignup />} />
+
+        <Route
+          path="/admin/forgot-password"
+          element={<AdminForgotPassword />}
+        />
 
         {/* Admin Panel */}
         <Route path="/admin" element={<AdminLayout />}>

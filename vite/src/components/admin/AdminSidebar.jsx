@@ -102,35 +102,38 @@ const menuGroups = [
 function SidebarContent({ onNavigate }) {
   return (
     <div className="flex h-full flex-col">
-
       {/* Logo */}
       <div className="flex h-20 items-center border-b border-white/10 px-6">
-        <div>
-          <h1 className="text-lg font-bold tracking-tight">
-            LiBi{" "}
-            <span className="text-cyan-400">
-              Motion Care
-            </span>
-          </h1>
+        <div className="flex items-center gap-3">
+          {/* LiBi Logo */}
+          <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full bg-white shadow-sm">
+            <img
+              src="/image.png"
+              alt="LiBi Motion Care Logo"
+              className="h-full w-full object-cover"
+            />
+          </div>
 
-          <p className="mt-1 text-xs text-slate-400">
-            Admin Portal
-          </p>
+          {/* Brand Name */}
+          <div>
+            <h1 className="text-lg font-bold tracking-tight text-white">
+              LiBi <span className="text-cyan-400">Motion Care</span>
+            </h1>
+
+            <p className="mt-1 text-xs text-slate-400">Admin Portal</p>
+          </div>
         </div>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-4 py-5">
-
         {menuGroups.map((group) => (
           <div key={group.title} className="mb-6">
-
             <p className="mb-2 px-3 text-[10px] font-bold tracking-[0.16em] text-slate-500">
               {group.title}
             </p>
 
             <div className="space-y-1">
-
               {group.items.map((item) => {
                 const Icon = item.icon;
 
@@ -165,11 +168,9 @@ function SidebarContent({ onNavigate }) {
                   </NavLink>
                 );
               })}
-
             </div>
           </div>
         ))}
-
       </nav>
 
       {/* Logout */}
@@ -182,15 +183,11 @@ function SidebarContent({ onNavigate }) {
           Logout
         </button>
       </div>
-
     </div>
   );
 }
 
-export default function AdminSidebar({
-  mobileOpen,
-  setMobileOpen,
-}) {
+export default function AdminSidebar({ mobileOpen, setMobileOpen }) {
   return (
     <>
       {/* Desktop Sidebar */}
@@ -209,9 +206,7 @@ export default function AdminSidebar({
       {/* Mobile Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0B1B2A] text-white shadow-2xl transition-transform duration-300 lg:hidden ${
-          mobileOpen
-            ? "translate-x-0"
-            : "-translate-x-full"
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Close */}
@@ -224,9 +219,7 @@ export default function AdminSidebar({
           <X size={20} />
         </button>
 
-        <SidebarContent
-          onNavigate={() => setMobileOpen(false)}
-        />
+        <SidebarContent onNavigate={() => setMobileOpen(false)} />
       </aside>
     </>
   );
