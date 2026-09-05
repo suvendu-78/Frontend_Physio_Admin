@@ -16,6 +16,14 @@ import AdminLanding from "../pages/AdminLanding";
 import AdminLogin from "../pages/AdminLogin";
 import AdminSignup from "../pages/AdminSignup";
 import AdminForgotPassword from "../pages/AdminForgotPassword";
+import DoctorSignup from "../pages/doctor/DoctorSignup";
+import DoctorLogin from "../pages/doctor/DoctorLogin";
+import DoctorDashboard from "../pages/doctor/DoctorDashboard";
+import DoctorForgotPassword from "../pages/doctor/DoctorForgotPassword";
+import ClinicSignup from "../pages/clinic/ClinicSignup";
+import ClinicLogin from "../pages/clinic/ClinicLogin";
+import ClinicForgotPassword from "../pages/clinic/ClinicForgotPassword";
+import ClinicDashboard from "../pages/clinic/ClinicDashboard";
 
 export default function AppRoutes() {
   return (
@@ -35,7 +43,30 @@ export default function AppRoutes() {
           path="/admin/forgot-password"
           element={<AdminForgotPassword />}
         />
+        {/* =====================================================
+    DOCTOR
+===================================================== */}
 
+        <Route path="/doctor/signup" element={<DoctorSignup />} />
+
+        <Route path="/doctor/login" element={<DoctorLogin />} />
+
+        <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+
+        <Route
+          path="/doctor/forgot-password"
+          element={<DoctorForgotPassword />}
+        />
+        <Route path="/clinic/signup" element={<ClinicSignup />} />
+
+        <Route path="/clinic/login" element={<ClinicLogin />} />
+
+        <Route
+          path="/clinic/forgot-password"
+          element={<ClinicForgotPassword />}
+        />
+
+        <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
         {/* Admin Panel */}
         <Route path="/admin" element={<AdminLayout />}>
           {/* /admin */}
