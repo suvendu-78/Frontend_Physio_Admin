@@ -98,12 +98,39 @@ const DoctorLogin = () => {
           experience: doctorAccount.experience,
           clinicName: doctorAccount.clinicName,
           status: doctorAccount.status,
+          documentStatus: doctorAccount.documentStatus || "PENDING",
+          rejectionReason: doctorAccount.rejectionReason || "",
+          verifiedAt: doctorAccount.verifiedAt || null,
+          verifiedBy: doctorAccount.verifiedBy || null,
         }),
       );
 
       setLoading(false);
 
-      navigate("/doctor/dashboard");
+      // Keep unverified doctors out of the dashboard.
+      if (doctorAccount.status === "VERIFIED") {
+        navigate("/doctor/dashboard");
+        return;
+      }
+
+      if (
+        doctorAccount.status === "REJECTED" ||
+        doctorAccount.documentStatus === "REJECTED"
+      ) {
+        navigate("/doctor/documents");
+        return;
+      }
+
+      if (
+        doctorAccount.status === "UNDER_REVIEW" ||
+        doctorAccount.documentStatus === "SUBMITTED"
+      ) {
+        navigate("/doctor/verification-status");
+        return;
+      }
+
+      // New/pending doctor accounts must complete document submission first.
+      navigate("/doctor/documents");
     }, 700);
   };
 
@@ -166,6 +193,27 @@ const DoctorLogin = () => {
           {/* CARD */}
 
           <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/40 sm:p-8">
+            {/* VERIFICATION FLOW NOTICE */}
+
+            <div className="mb-6 rounded-xl border border-[#32838c]/15 bg-[#32838c]/5 p-4">
+              <div className="flex items-start gap-3">
+                <ShieldCheck
+                  size={18}
+                  className="mt-0.5 shrink-0 text-[#32838c]"
+                />
+                <div>
+                  <p className="text-xs font-bold text-slate-800">
+                    Verification required
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">
+                    After login, pending doctors will be taken to document
+                    submission or verification status before accessing the
+                    dashboard.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* ERROR */}
 
             {error && (

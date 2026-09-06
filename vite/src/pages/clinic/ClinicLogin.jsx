@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   CheckCircle2,
   AlertCircle,
+  FileCheck2,
 } from "lucide-react";
 
 export default function ClinicLogin() {
@@ -93,6 +94,18 @@ export default function ClinicLogin() {
           pincode: clinic.pincode,
 
           status: clinic.status,
+
+          documentStatus:
+            clinic.documentStatus || "PENDING",
+
+          rejectionReason:
+            clinic.rejectionReason || "",
+
+          verifiedAt:
+            clinic.verifiedAt || null,
+
+          verifiedBy:
+            clinic.verifiedBy || null,
         };
 
         localStorage.setItem(
@@ -102,7 +115,37 @@ export default function ClinicLogin() {
 
         setLoading(false);
 
-        navigate("/clinic/dashboard");
+        /*
+         * VERIFICATION FLOW
+         */
+
+        // 1. Admin has verified the clinic
+        if (clinic.status === "VERIFIED") {
+          navigate("/clinic/dashboard");
+          return;
+        }
+
+        // 2. Documents were rejected
+        if (
+          clinic.status === "REJECTED" ||
+          clinic.documentStatus === "REJECTED"
+        ) {
+          navigate("/clinic/documents");
+          return;
+        }
+
+        // 3. Documents are submitted and waiting
+        // for admin verification
+        if (
+          clinic.status === "UNDER_REVIEW" ||
+          clinic.documentStatus === "SUBMITTED"
+        ) {
+          navigate("/clinic/verification-status");
+          return;
+        }
+
+        // 4. New account / documents not submitted
+        navigate("/clinic/documents");
       } catch {
         setLoading(false);
         setError(
@@ -115,8 +158,13 @@ export default function ClinicLogin() {
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="grid min-h-screen lg:grid-cols-2">
-        {/* Left */}
+
+        {/* =====================================================
+            LEFT PANEL
+        ===================================================== */}
+
         <div className="hidden bg-[#32838c] p-10 text-white lg:flex lg:flex-col lg:justify-between">
+
           <Link to="/" className="flex items-center gap-3">
             <img
               src="/image.png"
@@ -136,6 +184,7 @@ export default function ClinicLogin() {
           </Link>
 
           <div className="max-w-lg">
+
             <div className="mb-6 grid h-16 w-16 place-items-center rounded-2xl bg-white/10">
               <Building2 className="h-8 w-8" />
             </div>
@@ -153,10 +202,12 @@ export default function ClinicLogin() {
             </p>
 
             <div className="mt-8 space-y-4">
+
               {[
                 "Manage your clinic profile",
                 "Manage doctors and patients",
                 "Track appointments and payments",
+                "Secure document verification",
               ].map((item) => (
                 <div
                   key={item}
@@ -166,6 +217,7 @@ export default function ClinicLogin() {
                   {item}
                 </div>
               ))}
+
             </div>
           </div>
 
@@ -174,10 +226,15 @@ export default function ClinicLogin() {
           </p>
         </div>
 
-        {/* Right */}
+        {/* =====================================================
+            RIGHT PANEL
+        ===================================================== */}
+
         <div className="flex items-center justify-center px-4 py-10 sm:px-8">
           <div className="w-full max-w-md">
+
             <div className="mb-8 text-center lg:text-left">
+
               <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-[#32838c]/10">
                 <Building2 className="h-7 w-7 text-[#32838c]" />
               </div>
@@ -189,18 +246,25 @@ export default function ClinicLogin() {
               <p className="mt-2 text-sm text-slate-500">
                 Sign in to your clinic partner account
               </p>
+
             </div>
 
             <form
               onSubmit={handleSubmit}
               className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/40 sm:p-8"
             >
+
+              {/* ERROR */}
+
               {error && (
                 <div className="mb-5 flex gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
                   <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+
                   <span>{error}</span>
                 </div>
               )}
+
+              {/* EMAIL */}
 
               <div>
                 <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -208,6 +272,7 @@ export default function ClinicLogin() {
                 </label>
 
                 <div className="relative">
+
                   <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
                   <input
@@ -220,11 +285,16 @@ export default function ClinicLogin() {
                     placeholder="clinic@example.com"
                     className="h-13 w-full rounded-xl border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
                   />
+
                 </div>
               </div>
 
+              {/* PASSWORD */}
+
               <div className="mt-5">
+
                 <div className="mb-2 flex items-center justify-between">
+
                   <label className="block text-sm font-semibold text-slate-700">
                     Password
                   </label>
@@ -235,9 +305,11 @@ export default function ClinicLogin() {
                   >
                     Forgot Password?
                   </Link>
+
                 </div>
 
                 <div className="relative">
+
                   <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
                   <input
@@ -261,6 +333,11 @@ export default function ClinicLogin() {
                       setShowPassword((prev) => !prev)
                     }
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    aria-label={
+                      showPassword
+                        ? "Hide password"
+                        : "Show password"
+                    }
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -268,31 +345,61 @@ export default function ClinicLogin() {
                       <Eye className="h-4 w-4" />
                     )}
                   </button>
+
                 </div>
               </div>
+
+              {/* LOGIN */}
 
               <button
                 type="submit"
                 disabled={loading}
                 className="mt-7 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#32838c] text-sm font-bold text-white shadow-lg shadow-[#32838c]/20 transition hover:bg-[#286f77] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? "Signing In..." : "Sign In"}
 
-                {!loading && (
-                  <ArrowRight className="h-4 w-4" />
+                {loading ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                    Signing In...
+                  </>
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight className="h-4 w-4" />
+                  </>
                 )}
+
               </button>
+
+              {/* VERIFICATION INFO */}
+
+              <div className="mt-5 flex items-start gap-3 rounded-xl border border-[#32838c]/15 bg-[#32838c]/5 p-3.5">
+
+                <FileCheck2 className="mt-0.5 h-4 w-4 shrink-0 text-[#32838c]" />
+
+                <p className="text-xs leading-5 text-slate-500">
+                  Your clinic must complete document
+                  verification before dashboard access is
+                  enabled.
+                </p>
+
+              </div>
+
+              {/* REGISTER */}
 
               <div className="my-6 flex items-center gap-3">
                 <div className="h-px flex-1 bg-slate-100" />
+
                 <span className="text-xs text-slate-400">
                   OR
                 </span>
+
                 <div className="h-px flex-1 bg-slate-100" />
               </div>
 
               <p className="text-center text-sm text-slate-500">
                 Don't have a clinic account?{" "}
+
                 <Link
                   to="/clinic/signup"
                   className="font-bold text-[#32838c] hover:underline"
@@ -300,21 +407,29 @@ export default function ClinicLogin() {
                   Register Clinic
                 </Link>
               </p>
+
             </form>
 
+            {/* BACK */}
+
             <div className="mt-6 flex justify-center">
+
               <Link
                 to="/"
                 className="text-sm font-semibold text-slate-500 hover:text-[#32838c]"
               >
                 ← Back to LiBi Motion Care
               </Link>
+
             </div>
+
+            {/* SECURITY */}
 
             <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
               <ShieldCheck className="h-4 w-4" />
               Secure Clinic Partner Portal
             </div>
+
           </div>
         </div>
       </div>

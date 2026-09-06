@@ -24,7 +24,11 @@ import ClinicSignup from "../pages/clinic/ClinicSignup";
 import ClinicLogin from "../pages/clinic/ClinicLogin";
 import ClinicForgotPassword from "../pages/clinic/ClinicForgotPassword";
 import ClinicDashboard from "../pages/clinic/ClinicDashboard";
+import DoctorDocuments from "../pages/doctor/DoctorDocuments";
+import DoctorVerificationStatus from "../pages/doctor/DoctorVerificationStatus";
 
+import ClinicDocuments from "../pages/clinic/ClinicDocuments";
+import ClinicVerificationStatus from "../pages/clinic/ClinicVerificationStatus";
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -64,6 +68,20 @@ export default function AppRoutes() {
         <Route
           path="/clinic/forgot-password"
           element={<ClinicForgotPassword />}
+        />
+
+        <Route path="/clinic/documents" element={<ClinicDocuments />} />
+
+        <Route
+          path="/clinic/verification-status"
+          element={<ClinicVerificationStatus />}
+        />
+
+        <Route path="/doctor/documents" element={<DoctorDocuments />} />
+
+        <Route
+          path="/doctor/verification-status"
+          element={<DoctorVerificationStatus />}
         />
 
         <Route path="/clinic/dashboard" element={<ClinicDashboard />} />
