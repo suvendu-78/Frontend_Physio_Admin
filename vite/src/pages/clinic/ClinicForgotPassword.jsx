@@ -1,12 +1,9 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { Link } from "react-router-dom";
 
 import {
   Building2,
   Mail,
-  Lock,
-  Eye,
-  EyeOff,
   ArrowRight,
   ArrowLeft,
   CheckCircle2,
@@ -15,28 +12,19 @@ import {
 } from "lucide-react";
 
 export default function ClinicForgotPassword() {
-  const navigate = useNavigate();
-
-  const [step, setStep] = useState(1);
-
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
-
-  const [showPassword, setShowPassword] =
-    useState(false);
-
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
-
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const handleVerifyEmail = (e) => {
+  const refemail = useRef();
+  const handleVerifyEmail = async (e) => {
     e.preventDefault();
 
+    const info = {
+      email: refemail.current.value,
+    };
     setError("");
+    setSuccess("");
 
     if (!email.trim()) {
       setError("Please enter your clinic email.");
@@ -45,123 +33,36 @@ export default function ClinicForgotPassword() {
 
     setLoading(true);
 
-    setTimeout(() => {
-      const storedAccount = localStorage.getItem(
-        "libi_clinic_account"
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/pattner/clinic_Forgetpassword",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(info),
+        },
       );
 
-      if (!storedAccount) {
-        setLoading(false);
-        setError(
-          "No clinic account found with this email."
-        );
-        return;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Unable to send reset link.");
       }
 
-      try {
-        const clinic = JSON.parse(storedAccount);
-
-        if (
-          clinic.email !==
-          email.toLowerCase().trim()
-        ) {
-          setLoading(false);
-          setError(
-            "No clinic account found with this email."
-          );
-          return;
-        }
-
-        setLoading(false);
-        setStep(2);
-      } catch {
-        setLoading(false);
-        setError(
-          "Unable to verify account. Please try again."
-        );
-      }
-    }, 700);
-  };
-
-  const handleResetPassword = (e) => {
-    e.preventDefault();
-
-    setError("");
-
-    if (password.length < 8) {
-      setError(
-        "Password must contain at least 8 characters."
+      setSuccess(
+        data.message || "Password reset link has been sent to your email.",
       );
-      return;
+    } catch (error) {
+      console.log("FORGOT PASSWORD ERROR:", error);
+
+      setError(error.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    setLoading(true);
-
-    setTimeout(() => {
-      const storedAccount = localStorage.getItem(
-        "libi_clinic_account"
-      );
-
-      if (!storedAccount) {
-        setLoading(false);
-        setError("Clinic account not found.");
-        return;
-      }
-
-      try {
-        const clinic = JSON.parse(storedAccount);
-
-        clinic.password = password;
-
-        localStorage.setItem(
-          "libi_clinic_account",
-          JSON.stringify(clinic)
-        );
-
-        setLoading(false);
-        setStep(3);
-      } catch {
-        setLoading(false);
-        setError(
-          "Unable to reset password. Please try again."
-        );
-      }
-    }, 800);
   };
-
-  if (step === 3) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-full bg-emerald-50">
-            <CheckCircle2 className="h-9 w-9 text-emerald-600" />
-          </div>
-
-          <h1 className="text-2xl font-bold text-slate-900">
-            Password Updated
-          </h1>
-
-          <p className="mt-3 text-sm leading-6 text-slate-500">
-            Your clinic password has been updated
-            successfully.
-          </p>
-
-          <button
-            onClick={() => navigate("/clinic/login")}
-            className="mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-[#32838c] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#286f77]"
-          >
-            Continue to Login
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -179,9 +80,7 @@ export default function ClinicForgotPassword() {
                 LiBi Motion Care
               </p>
 
-              <p className="text-xs text-slate-500">
-                Clinic Partner Portal
-              </p>
+              <p className="text-xs text-slate-500">Clinic Partner Portal</p>
             </div>
           </Link>
         </div>
@@ -199,26 +98,8 @@ export default function ClinicForgotPassword() {
             </h1>
 
             <p className="mt-2 text-sm text-slate-500">
-              Reset your clinic partner account password
+              Enter your admin email and we'll help you reset your password.
             </p>
-          </div>
-
-          <div className="mb-6 flex items-center">
-            <Step
-              number="1"
-              label="Verify"
-              active={step === 1}
-              completed={step > 1}
-            />
-
-            <div className="h-px flex-1 bg-slate-200" />
-
-            <Step
-              number="2"
-              label="Reset"
-              active={step === 2}
-              completed={false}
-            />
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/40 sm:p-8">
@@ -229,164 +110,56 @@ export default function ClinicForgotPassword() {
               </div>
             )}
 
-            {step === 1 && (
-              <form onSubmit={handleVerifyEmail}>
-                <h2 className="text-xl font-bold text-slate-900">
-                  Verify Your Account
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Enter the email address associated with
-                  your clinic account.
-                </p>
-
-                <div className="mt-6">
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Clinic Email
-                  </label>
-
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        setError("");
-                      }}
-                      placeholder="clinic@example.com"
-                      className="h-13 w-full rounded-xl border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="mt-6 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#32838c] text-sm font-bold text-white transition hover:bg-[#286f77] disabled:opacity-60"
-                >
-                  {loading
-                    ? "Verifying..."
-                    : "Verify Email"}
-
-                  {!loading && (
-                    <ArrowRight className="h-4 w-4" />
-                  )}
-                </button>
-              </form>
+            {success && (
+              <div className="mb-5 flex gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
+                <span>{success}</span>
+              </div>
             )}
 
-            {step === 2 && (
-              <form onSubmit={handleResetPassword}>
-                <h2 className="text-xl font-bold text-slate-900">
-                  Create New Password
-                </h2>
+            <form onSubmit={handleVerifyEmail}>
+              <h2 className="text-xl font-bold text-slate-900">
+                Reset Your Password
+              </h2>
 
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Create a new secure password for your
-                  clinic account.
-                </p>
+              <p className="mt-2 text-sm leading-6 text-slate-500">
+                Enter the email address associated with your admin account. We
+                will send you a password reset link.
+              </p>
 
-                <div className="mt-6">
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    New Password
-                  </label>
+              <div className="mt-6">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  Admin Email
+                </label>
 
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
 
-                    <input
-                      type={
-                        showPassword
-                          ? "text"
-                          : "password"
-                      }
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                        setError("");
-                      }}
-                      placeholder="Minimum 8 characters"
-                      className="h-13 w-full rounded-xl border border-slate-200 pl-11 pr-12 text-sm outline-none transition focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPassword(
-                          (prev) => !prev
-                        )
-                      }
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
+                  <input
+                    type="email"
+                    value={email}
+                    ref={refemail}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError("");
+                      setSuccess("");
+                    }}
+                    placeholder="admin@example.com"
+                    className="h-13 w-full rounded-xl border border-slate-200 pl-11 pr-4 text-sm outline-none transition focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
+                  />
                 </div>
+              </div>
 
-                <div className="mt-5">
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
-                    Confirm Password
-                  </label>
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-6 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#32838c] text-sm font-bold text-white transition hover:bg-[#286f77] disabled:opacity-60"
+              >
+                {loading ? "Sending..." : "Send Reset Link"}
 
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-
-                    <input
-                      type={
-                        showConfirmPassword
-                          ? "text"
-                          : "password"
-                      }
-                      value={confirmPassword}
-                      onChange={(e) => {
-                        setConfirmPassword(
-                          e.target.value
-                        );
-                        setError("");
-                      }}
-                      placeholder="Re-enter password"
-                      className="h-13 w-full rounded-xl border border-slate-200 pl-11 pr-12 text-sm outline-none transition focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(
-                          (prev) => !prev
-                        )
-                      }
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="mt-6 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#32838c] text-sm font-bold text-white transition hover:bg-[#286f77] disabled:opacity-60"
-                >
-                  {loading
-                    ? "Updating..."
-                    : "Update Password"}
-
-                  {!loading && (
-                    <CheckCircle2 className="h-4 w-4" />
-                  )}
-                </button>
-              </form>
-            )}
+                {!loading && <ArrowRight className="h-4 w-4" />}
+              </button>
+            </form>
           </div>
 
           <div className="mt-6 text-center">
@@ -405,38 +178,6 @@ export default function ClinicForgotPassword() {
           </div>
         </div>
       </main>
-    </div>
-  );
-}
-
-function Step({ number, label, active, completed }) {
-  return (
-    <div className="flex items-center gap-2">
-      <div
-        className={`grid h-9 w-9 place-items-center rounded-full text-xs font-bold ${
-          completed
-            ? "bg-emerald-500 text-white"
-            : active
-            ? "bg-[#32838c] text-white"
-            : "bg-slate-100 text-slate-400"
-        }`}
-      >
-        {completed ? (
-          <CheckCircle2 className="h-4 w-4" />
-        ) : (
-          number
-        )}
-      </div>
-
-      <span
-        className={`hidden text-xs font-semibold sm:block ${
-          active
-            ? "text-slate-900"
-            : "text-slate-400"
-        }`}
-      >
-        {label}
-      </span>
     </div>
   );
 }

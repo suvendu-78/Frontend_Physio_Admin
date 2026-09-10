@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import {
@@ -16,130 +16,64 @@ import {
 const DoctorLogin = () => {
   const navigate = useNavigate();
 
+  const refEmail = useRef();
+  const refPassword = useRef();
+
   const [showPassword, setShowPassword] = useState(false);
-
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-
-    setError("");
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     setError("");
 
-    if (!formData.email || !formData.password) {
+    const loginData = {
+      Email: refEmail.current.value.trim().toLowerCase(),
+      Password: refPassword.current.value,
+    };
+
+    if (!loginData.Email || !loginData.Password) {
       setError("Please enter your email and password.");
       return;
     }
 
     setLoading(true);
 
-    setTimeout(() => {
-      const savedAccount = localStorage.getItem("libi_doctor_account");
-
-      if (!savedAccount) {
-        setLoading(false);
-
-        setError(
-          "No doctor account found. Please create your doctor account first.",
-        );
-
-        return;
-      }
-
-      const doctorAccount = JSON.parse(savedAccount);
-
-      const emailMatches =
-        doctorAccount.email === formData.email.toLowerCase().trim();
-
-      const passwordMatches = doctorAccount.password === formData.password;
-
-      if (!emailMatches || !passwordMatches) {
-        setLoading(false);
-
-        setError("Invalid email or password. Please try again.");
-
-        return;
-      }
-
-      /*
-        DEVELOPMENT ONLY
-
-        Store the currently logged-in doctor.
-        Production authentication should use a backend session/JWT.
-      */
-
-      localStorage.setItem(
-        "libi_current_doctor",
-        JSON.stringify({
-          id: doctorAccount.id,
-          role: "DOCTOR",
-          fullName: doctorAccount.fullName,
-          email: doctorAccount.email,
-          phone: doctorAccount.phone,
-          specialization: doctorAccount.specialization,
-          registrationNumber: doctorAccount.registrationNumber,
-          qualification: doctorAccount.qualification,
-          experience: doctorAccount.experience,
-          clinicName: doctorAccount.clinicName,
-          status: doctorAccount.status,
-          documentStatus: doctorAccount.documentStatus || "PENDING",
-          rejectionReason: doctorAccount.rejectionReason || "",
-          verifiedAt: doctorAccount.verifiedAt || null,
-          verifiedBy: doctorAccount.verifiedBy || null,
-        }),
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/pattner/doctor_Login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(loginData),
+        },
       );
 
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(
+          data.message || "Invalid email or password. Please try again.",
+        );
+        setLoading(false);
+        return;
+      }
+
       setLoading(false);
-
-      // Keep unverified doctors out of the dashboard.
-      if (doctorAccount.status === "VERIFIED") {
-        navigate("/doctor/dashboard");
-        return;
-      }
-
-      if (
-        doctorAccount.status === "REJECTED" ||
-        doctorAccount.documentStatus === "REJECTED"
-      ) {
-        navigate("/doctor/documents");
-        return;
-      }
-
-      if (
-        doctorAccount.status === "UNDER_REVIEW" ||
-        doctorAccount.documentStatus === "SUBMITTED"
-      ) {
-        navigate("/doctor/verification-status");
-        return;
-      }
-
-      // New/pending doctor accounts must complete document submission first.
-      navigate("/doctor/documents");
-    }, 700);
+      setShowSuccessPopup(true);
+    } catch (error) {
+      setLoading(false);
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#f7fbfb] text-slate-900">
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link to="/" className="inline-flex items-center gap-3">
@@ -164,14 +98,8 @@ const DoctorLogin = () => {
         </div>
       </header>
 
-      {/* =====================================================
-          LOGIN
-      ===================================================== */}
-
       <main className="flex min-h-[calc(100vh-81px)] items-center justify-center px-5 py-12 sm:px-8">
         <div className="w-full max-w-md">
-          {/* ICON */}
-
           <div className="text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#32838c]/10">
               <Stethoscope size={30} className="text-[#32838c]" />
@@ -190,32 +118,7 @@ const DoctorLogin = () => {
             </p>
           </div>
 
-          {/* CARD */}
-
           <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/40 sm:p-8">
-            {/* VERIFICATION FLOW NOTICE */}
-
-            <div className="mb-6 rounded-xl border border-[#32838c]/15 bg-[#32838c]/5 p-4">
-              <div className="flex items-start gap-3">
-                <ShieldCheck
-                  size={18}
-                  className="mt-0.5 shrink-0 text-[#32838c]"
-                />
-                <div>
-                  <p className="text-xs font-bold text-slate-800">
-                    Verification required
-                  </p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">
-                    After login, pending doctors will be taken to document
-                    submission or verification status before accessing the
-                    dashboard.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* ERROR */}
-
             {error && (
               <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
                 <ShieldCheck
@@ -230,8 +133,6 @@ const DoctorLogin = () => {
             )}
 
             <form onSubmit={handleSubmit}>
-              {/* EMAIL */}
-
               <div>
                 <label className="mb-2 block text-xs font-bold text-slate-700">
                   Email Address
@@ -247,16 +148,13 @@ const DoctorLogin = () => {
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
-                    onChange={handleChange}
+                    ref={refEmail}
                     placeholder="doctor@example.com"
                     className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#32838c] focus:bg-white focus:ring-2 focus:ring-[#32838c]/10"
                     required
                   />
                 </div>
               </div>
-
-              {/* PASSWORD */}
 
               <div className="mt-5">
                 <div className="mb-2 flex items-center justify-between">
@@ -282,8 +180,7 @@ const DoctorLogin = () => {
                   <input
                     type={showPassword ? "text" : "password"}
                     name="password"
-                    value={formData.password}
-                    onChange={handleChange}
+                    ref={refPassword}
                     placeholder="Enter your password"
                     className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-11 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-[#32838c] focus:bg-white focus:ring-2 focus:ring-[#32838c]/10"
                     required
@@ -299,8 +196,6 @@ const DoctorLogin = () => {
                 </div>
               </div>
 
-              {/* REMEMBER */}
-
               <div className="mt-5 flex items-center gap-2">
                 <CheckCircle2 size={15} className="text-[#32838c]" />
 
@@ -308,8 +203,6 @@ const DoctorLogin = () => {
                   Your account information is protected.
                 </span>
               </div>
-
-              {/* LOGIN BUTTON */}
 
               <button
                 type="submit"
@@ -333,8 +226,6 @@ const DoctorLogin = () => {
               </button>
             </form>
 
-            {/* SIGNUP */}
-
             <div className="mt-7 border-t border-slate-100 pt-6 text-center">
               <p className="text-xs text-slate-500">
                 Don't have a doctor account?{" "}
@@ -348,8 +239,6 @@ const DoctorLogin = () => {
             </div>
           </div>
 
-          {/* BACK */}
-
           <div className="mt-6 text-center">
             <Link
               to="/"
@@ -361,6 +250,36 @@ const DoctorLogin = () => {
           </div>
         </div>
       </main>
+
+      {showSuccessPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-5">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-7 text-center shadow-2xl">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#32838c]/10">
+              <CheckCircle2 size={30} className="text-[#32838c]" />
+            </div>
+
+            <h3 className="mt-5 text-xl font-bold text-slate-900">
+              Login Successful
+            </h3>
+
+            <p className="mt-2 text-sm text-slate-500">
+              Welcome back! You have successfully logged in to the doctor
+              portal.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowSuccessPopup(false);
+                navigate("/doctor/dashboard");
+              }}
+              className="mt-6 h-11 w-full rounded-xl bg-[#32838c] text-sm font-bold text-white transition hover:bg-[#286a71]"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

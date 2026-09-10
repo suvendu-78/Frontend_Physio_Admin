@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import {
@@ -21,123 +21,90 @@ import {
 export default function ClinicSignup() {
   const navigate = useNavigate();
 
+  const formRef = useRef(null);
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const [formData, setFormData] = useState({
-    clinicName: "",
-    ownerName: "",
-    email: "",
-    phone: "",
-    registrationNumber: "",
-    clinicType: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    setError("");
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!formData.clinicName.trim()) {
+    const formData = new FormData(formRef.current);
+
+    const data = Object.fromEntries(formData.entries());
+
+    if (!data.clinicName.trim()) {
       setError("Please enter clinic name.");
       return;
     }
 
-    if (!formData.ownerName.trim()) {
+    if (!data.ownerName.trim()) {
       setError("Please enter clinic owner/admin name.");
       return;
     }
 
-    if (!formData.email.trim()) {
+    if (!data.email.trim()) {
       setError("Please enter clinic email.");
       return;
     }
 
-    if (!/^\d{10}$/.test(formData.phone)) {
+    if (!/^\d{10}$/.test(data.phone)) {
       setError("Please enter a valid 10-digit phone number.");
       return;
     }
 
-    if (formData.password.length < 8) {
+    if (data.password.length < 8) {
       setError("Password must contain at least 8 characters.");
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (data.password !== data.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
 
-    if (
-      formData.pincode &&
-      !/^\d{6}$/.test(formData.pincode)
-    ) {
+    if (data.pincode && !/^\d{6}$/.test(data.pincode)) {
       setError("Please enter a valid 6-digit pincode.");
       return;
     }
 
+    const clinicData = {
+      clinicName: data.clinicName.trim(),
+      ownerName: data.ownerName.trim(),
+      email: data.email.toLowerCase().trim(),
+      phone: data.phone.trim(),
+      registrationNumber: data.registrationNumber.trim(),
+      clinicType: data.clinicType,
+      address: data.address.trim(),
+      city: data.city.trim(),
+      state: data.state.trim(),
+      pincode: data.pincode.trim(),
+      Password: data.password,
+      role: "clinic",
+    };
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/pattner/pattnersignup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(clinicData),
+        },
+      );
+    } catch (error) {
+      console.log("pattner clinic fetching data issu", error);
+    }
+    console.log("Clinic Data:", clinicData);
+
     setLoading(true);
 
     setTimeout(() => {
-      /*
-       * DEVELOPMENT ONLY
-       *
-       * In production:
-       * Send this information to your backend API.
-       * Never store passwords directly in localStorage.
-       */
-
-      const clinicAccount = {
-        id: `clinic_${Date.now()}`,
-        role: "CLINIC",
-
-        clinicName: formData.clinicName.trim(),
-        ownerName: formData.ownerName.trim(),
-
-        email: formData.email.toLowerCase().trim(),
-        phone: formData.phone,
-
-        registrationNumber:
-          formData.registrationNumber.trim(),
-
-        clinicType: formData.clinicType,
-
-        address: formData.address.trim(),
-        city: formData.city.trim(),
-        state: formData.state.trim(),
-        pincode: formData.pincode,
-
-        password: formData.password,
-
-        status: "PENDING",
-
-        createdAt: new Date().toISOString(),
-      };
-
-      localStorage.setItem(
-        "libi_clinic_account",
-        JSON.stringify(clinicAccount)
-      );
-
       setLoading(false);
       setSuccess(true);
 
@@ -160,8 +127,8 @@ export default function ClinicSignup() {
           </h1>
 
           <p className="mt-3 text-sm leading-6 text-slate-500">
-            Your clinic registration has been submitted successfully.
-            You can now continue to the clinic login.
+            Your clinic registration has been submitted successfully. You can
+            now continue to the clinic login.
           </p>
 
           <div className="mt-6 rounded-2xl bg-slate-50 p-4 text-left">
@@ -188,7 +155,6 @@ export default function ClinicSignup() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header */}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link to="/" className="flex items-center gap-3">
@@ -203,9 +169,7 @@ export default function ClinicSignup() {
                 LiBi Motion Care
               </p>
 
-              <p className="text-xs text-slate-500">
-                Clinic Partner Portal
-              </p>
+              <p className="text-xs text-slate-500">Clinic Partner Portal</p>
             </div>
           </Link>
 
@@ -218,10 +182,8 @@ export default function ClinicSignup() {
         </div>
       </header>
 
-      {/* Main */}
       <main className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl">
-          {/* Heading */}
           <div className="mb-8 text-center">
             <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-[#32838c]/10">
               <Building2 className="h-7 w-7 text-[#32838c]" />
@@ -232,14 +194,13 @@ export default function ClinicSignup() {
             </h1>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-              Join LiBi Motion Care and manage your clinic,
-              doctors, patients and appointments from one platform.
+              Join LiBi Motion Care and manage your clinic, doctors, patients
+              and appointments from one platform.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form ref={formRef} onSubmit={handleSubmit}>
             <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-              {/* Clinic Information */}
               <section className="p-6 sm:p-8">
                 <div className="mb-6 flex items-center gap-3">
                   <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#32838c]/10">
@@ -261,8 +222,6 @@ export default function ClinicSignup() {
                   <InputField
                     label="Clinic Name"
                     name="clinicName"
-                    value={formData.clinicName}
-                    onChange={handleChange}
                     placeholder="Enter clinic name"
                     icon={Building2}
                     required
@@ -271,8 +230,6 @@ export default function ClinicSignup() {
                   <InputField
                     label="Clinic Owner / Administrator"
                     name="ownerName"
-                    value={formData.ownerName}
-                    onChange={handleChange}
                     placeholder="Enter owner/admin name"
                     icon={User}
                     required
@@ -282,8 +239,6 @@ export default function ClinicSignup() {
                     label="Clinic Email"
                     name="email"
                     type="email"
-                    value={formData.email}
-                    onChange={handleChange}
                     placeholder="clinic@example.com"
                     icon={Mail}
                     required
@@ -292,8 +247,6 @@ export default function ClinicSignup() {
                   <InputField
                     label="Phone Number"
                     name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
                     placeholder="10-digit phone number"
                     icon={Phone}
                     maxLength={10}
@@ -303,8 +256,6 @@ export default function ClinicSignup() {
                   <InputField
                     label="Registration Number"
                     name="registrationNumber"
-                    value={formData.registrationNumber}
-                    onChange={handleChange}
                     placeholder="Clinic registration number"
                     icon={FileText}
                   />
@@ -316,25 +267,25 @@ export default function ClinicSignup() {
 
                     <select
                       name="clinicType"
-                      value={formData.clinicType}
-                      onChange={handleChange}
+                      defaultValue=""
                       className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
                     >
-                      <option value="">
-                        Select clinic type
-                      </option>
+                      <option value="">Select clinic type</option>
+
                       <option value="Physiotherapy Clinic">
                         Physiotherapy Clinic
                       </option>
+
                       <option value="Rehabilitation Center">
                         Rehabilitation Center
                       </option>
+
                       <option value="Multi-Speciality Clinic">
                         Multi-Speciality Clinic
                       </option>
-                      <option value="Wellness Center">
-                        Wellness Center
-                      </option>
+
+                      <option value="Wellness Center">Wellness Center</option>
+
                       <option value="Other">Other</option>
                     </select>
                   </div>
@@ -343,7 +294,6 @@ export default function ClinicSignup() {
 
               <div className="border-t border-slate-100" />
 
-              {/* Address */}
               <section className="p-6 sm:p-8">
                 <div className="mb-6 flex items-center gap-3">
                   <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#32838c]/10">
@@ -351,9 +301,7 @@ export default function ClinicSignup() {
                   </div>
 
                   <div>
-                    <h2 className="font-bold text-slate-900">
-                      Clinic Address
-                    </h2>
+                    <h2 className="font-bold text-slate-900">Clinic Address</h2>
 
                     <p className="text-xs text-slate-500">
                       Where your clinic is located
@@ -369,8 +317,6 @@ export default function ClinicSignup() {
 
                     <textarea
                       name="address"
-                      value={formData.address}
-                      onChange={handleChange}
                       rows={3}
                       placeholder="Enter complete clinic address"
                       className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
@@ -380,8 +326,6 @@ export default function ClinicSignup() {
                   <InputField
                     label="City"
                     name="city"
-                    value={formData.city}
-                    onChange={handleChange}
                     placeholder="Enter city"
                     icon={MapPin}
                   />
@@ -389,8 +333,6 @@ export default function ClinicSignup() {
                   <InputField
                     label="State"
                     name="state"
-                    value={formData.state}
-                    onChange={handleChange}
                     placeholder="Enter state"
                     icon={MapPin}
                   />
@@ -398,8 +340,6 @@ export default function ClinicSignup() {
                   <InputField
                     label="Pincode"
                     name="pincode"
-                    value={formData.pincode}
-                    onChange={handleChange}
                     placeholder="6-digit pincode"
                     icon={MapPin}
                     maxLength={6}
@@ -409,7 +349,6 @@ export default function ClinicSignup() {
 
               <div className="border-t border-slate-100" />
 
-              {/* Security */}
               <section className="p-6 sm:p-8">
                 <div className="mb-6 flex items-center gap-3">
                   <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#32838c]/10">
@@ -431,8 +370,6 @@ export default function ClinicSignup() {
                   <PasswordField
                     label="Password"
                     name="password"
-                    value={formData.password}
-                    onChange={handleChange}
                     show={showPassword}
                     setShow={setShowPassword}
                     placeholder="Minimum 8 characters"
@@ -441,8 +378,6 @@ export default function ClinicSignup() {
                   <PasswordField
                     label="Confirm Password"
                     name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
                     show={showConfirmPassword}
                     setShow={setShowConfirmPassword}
                     placeholder="Re-enter password"
@@ -450,14 +385,12 @@ export default function ClinicSignup() {
                 </div>
               </section>
 
-              {/* Error */}
               {error && (
                 <div className="mx-6 mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600 sm:mx-8">
                   {error}
                 </div>
               )}
 
-              {/* Bottom */}
               <div className="border-t border-slate-100 bg-slate-50/70 p-6 sm:p-8">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <Link
@@ -475,9 +408,7 @@ export default function ClinicSignup() {
                   >
                     {loading ? "Creating Account..." : "Register Clinic"}
 
-                    {!loading && (
-                      <ArrowRight className="h-4 w-4" />
-                    )}
+                    {!loading && <ArrowRight className="h-4 w-4" />}
                   </button>
                 </div>
               </div>
@@ -497,8 +428,6 @@ export default function ClinicSignup() {
 function InputField({
   label,
   name,
-  value,
-  onChange,
   placeholder,
   icon: Icon,
   type = "text",
@@ -509,9 +438,8 @@ function InputField({
     <div>
       <label className="mb-2 block text-sm font-semibold text-slate-700">
         {label}
-        {required && (
-          <span className="ml-1 text-red-500">*</span>
-        )}
+
+        {required && <span className="ml-1 text-red-500">*</span>}
       </label>
 
       <div className="relative">
@@ -520,8 +448,6 @@ function InputField({
         <input
           type={type}
           name={name}
-          value={value}
-          onChange={onChange}
           placeholder={placeholder}
           maxLength={maxLength}
           required={required}
@@ -532,15 +458,7 @@ function InputField({
   );
 }
 
-function PasswordField({
-  label,
-  name,
-  value,
-  onChange,
-  show,
-  setShow,
-  placeholder,
-}) {
+function PasswordField({ label, name, show, setShow, placeholder }) {
   return (
     <div>
       <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -554,9 +472,8 @@ function PasswordField({
         <input
           type={show ? "text" : "password"}
           name={name}
-          value={value}
-          onChange={onChange}
           placeholder={placeholder}
+          required
           className="h-12 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-12 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-[#32838c] focus:ring-4 focus:ring-[#32838c]/10"
         />
 
@@ -565,11 +482,7 @@ function PasswordField({
           onClick={() => setShow((prev) => !prev)}
           className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
         >
-          {show ? (
-            <EyeOff className="h-4 w-4" />
-          ) : (
-            <Eye className="h-4 w-4" />
-          )}
+          {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
         </button>
       </div>
     </div>
