@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   Building2,
@@ -17,66 +17,25 @@ import {
   ShieldCheck,
   ChevronRight,
   Menu,
-  Activity,
-  FileText,
   Phone,
   MapPin,
   Clock3,
   Stethoscope,
+  FileText,
 } from "lucide-react";
 
 export default function ClinicDashboard() {
-  const navigate = useNavigate();
-
-  const [clinic, setClinic] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => {
-    const storedClinic = localStorage.getItem(
-      "libi_current_clinic"
-    );
-
-    if (storedClinic) {
-      try {
-        setClinic(JSON.parse(storedClinic));
-      } catch {
-        setClinic(null);
-      }
-    }
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("libi_current_clinic");
-    navigate("/clinic/login");
+  const clinic = {
+    clinicName: "LiBi Motion Care Clinic",
+    city: "Bhubaneswar",
+    state: "Odisha",
+    ownerName: "Suvendu Behera",
+    phone: "+91 9876543210",
+    status: "APPROVED",
+    clinicType: "Physiotherapy Clinic",
   };
-
-  if (!clinic) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-xl">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-[#32838c]/10">
-            <Building2 className="h-8 w-8 text-[#32838c]" />
-          </div>
-
-          <h1 className="text-2xl font-bold text-slate-900">
-            Clinic Login Required
-          </h1>
-
-          <p className="mt-3 text-sm leading-6 text-slate-500">
-            Please sign in to access your clinic dashboard.
-          </p>
-
-          <Link
-            to="/clinic/login"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#32838c] px-6 py-3 text-sm font-bold text-white"
-          >
-            Go to Clinic Login
-            <ChevronRight className="h-4 w-4" />
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   const stats = [
     {
@@ -154,9 +113,12 @@ export default function ClinicDashboard() {
     },
   ];
 
+  const handleLogout = () => {
+    window.location.href = "/clinic/login";
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Mobile Overlay */}
       {mobileOpen && (
         <button
           aria-label="Close sidebar"
@@ -165,16 +127,12 @@ export default function ClinicDashboard() {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 w-64 border-r border-slate-200 bg-white transition-transform duration-300 lg:translate-x-0 ${
-          mobileOpen
-            ? "translate-x-0"
-            : "-translate-x-full"
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex h-full flex-col">
-          {/* Logo */}
           <div className="flex h-20 items-center border-b border-slate-100 px-5">
             <Link
               to="/clinic/dashboard"
@@ -192,14 +150,11 @@ export default function ClinicDashboard() {
                   LiBi Motion Care
                 </p>
 
-                <p className="text-[10px] text-slate-400">
-                  Clinic Portal
-                </p>
+                <p className="text-[10px] text-slate-400">Clinic Portal</p>
               </div>
             </Link>
           </div>
 
-          {/* Clinic Mini Profile */}
           <div className="mx-4 mt-5 rounded-2xl bg-[#32838c]/5 p-4">
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#32838c] text-white">
@@ -211,14 +166,11 @@ export default function ClinicDashboard() {
                   {clinic.clinicName}
                 </p>
 
-                <p className="truncate text-xs text-slate-500">
-                  {clinic.city || "Clinic Partner"}
-                </p>
+                <p className="truncate text-xs text-slate-500">{clinic.city}</p>
               </div>
             </div>
           </div>
 
-          {/* Navigation */}
           <nav className="mt-6 flex-1 space-y-1 px-3">
             <SidebarItem
               icon={LayoutDashboard}
@@ -257,9 +209,9 @@ export default function ClinicDashboard() {
             />
 
             <SidebarItem
-              icon={Bell}
+              icon={FileText}
               label="Notifications"
-              to="/clinic/notifications"
+              to="/clinic/documents"
               onClick={() => setMobileOpen(false)}
             />
 
@@ -280,7 +232,6 @@ export default function ClinicDashboard() {
             />
           </nav>
 
-          {/* Bottom */}
           <div className="border-t border-slate-100 p-4">
             <button
               onClick={handleLogout}
@@ -293,9 +244,7 @@ export default function ClinicDashboard() {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="lg:pl-64">
-        {/* Header */}
         <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white/90 px-4 backdrop-blur sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <button
@@ -310,9 +259,7 @@ export default function ClinicDashboard() {
                 Clinic Portal
               </p>
 
-              <h1 className="text-lg font-bold text-slate-900">
-                Dashboard
-              </h1>
+              <h1 className="text-lg font-bold text-slate-900">Dashboard</h1>
             </div>
           </div>
 
@@ -335,16 +282,13 @@ export default function ClinicDashboard() {
                   {clinic.clinicName}
                 </p>
 
-                <p className="text-xs text-slate-400">
-                  Clinic Admin
-                </p>
+                <p className="text-xs text-slate-400">Clinic Admin</p>
               </div>
             </div>
           </div>
         </header>
 
         <main className="p-4 sm:p-6 lg:p-8">
-          {/* Welcome */}
           <section className="mb-8 overflow-hidden rounded-3xl bg-[#32838c] p-6 text-white shadow-xl shadow-[#32838c]/15 sm:p-8">
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -358,22 +302,19 @@ export default function ClinicDashboard() {
                 </h2>
 
                 <p className="mt-2 max-w-xl text-sm leading-6 text-white/75">
-                  Here's what's happening at your clinic
-                  today. Manage your appointments, doctors,
-                  patients and clinic operations.
+                  Here's what's happening at your clinic today. Manage your
+                  appointments, doctors, patients and clinic operations.
                 </p>
 
                 <div className="mt-5 flex flex-wrap gap-3">
                   <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold">
                     <CheckCircle2 className="h-3.5 w-3.5" />
-                    {clinic.status || "PENDING"}
+                    {clinic.status}
                   </span>
 
-                  {clinic.clinicType && (
-                    <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold">
-                      {clinic.clinicType}
-                    </span>
-                  )}
+                  <span className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold">
+                    {clinic.clinicType}
+                  </span>
                 </div>
               </div>
 
@@ -385,7 +326,6 @@ export default function ClinicDashboard() {
             </div>
           </section>
 
-          {/* Stats */}
           <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat) => {
               const Icon = stat.icon;
@@ -406,9 +346,7 @@ export default function ClinicDashboard() {
                     </span>
                   </div>
 
-                  <p className="mt-5 text-sm text-slate-500">
-                    {stat.title}
-                  </p>
+                  <p className="mt-5 text-sm text-slate-500">{stat.title}</p>
 
                   <p className="mt-1 text-2xl font-bold text-slate-900">
                     {stat.value}
@@ -418,9 +356,7 @@ export default function ClinicDashboard() {
             })}
           </section>
 
-          {/* Content Grid */}
           <section className="mt-6 grid gap-6 xl:grid-cols-3">
-            {/* Appointments */}
             <div className="xl:col-span-2 rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 p-5 sm:p-6">
                 <div>
@@ -489,13 +425,10 @@ export default function ClinicDashboard() {
               </div>
             </div>
 
-            {/* Doctors */}
             <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 p-5">
                 <div>
-                  <h2 className="font-bold text-slate-900">
-                    Clinic Doctors
-                  </h2>
+                  <h2 className="font-bold text-slate-900">Clinic Doctors</h2>
 
                   <p className="mt-1 text-xs text-slate-400">
                     Active healthcare professionals
@@ -512,10 +445,7 @@ export default function ClinicDashboard() {
 
               <div className="divide-y divide-slate-100">
                 {doctors.map((doctor) => (
-                  <div
-                    key={doctor.name}
-                    className="p-5"
-                  >
+                  <div key={doctor.name} className="p-5">
                     <div className="flex items-center gap-3">
                       <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#32838c]/10">
                         <Stethoscope className="h-5 w-5 text-[#32838c]" />
@@ -533,9 +463,7 @@ export default function ClinicDashboard() {
                     </div>
 
                     <div className="mt-3 flex items-center justify-between text-xs">
-                      <span className="text-slate-400">
-                        Active Patients
-                      </span>
+                      <span className="text-slate-400">Active Patients</span>
 
                       <span className="font-bold text-slate-700">
                         {doctor.patients}
@@ -557,14 +485,10 @@ export default function ClinicDashboard() {
             </div>
           </section>
 
-          {/* Bottom */}
           <section className="mt-6 grid gap-6 lg:grid-cols-2">
-            {/* Quick Actions */}
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
               <div className="mb-5">
-                <h2 className="font-bold text-slate-900">
-                  Quick Actions
-                </h2>
+                <h2 className="font-bold text-slate-900">Quick Actions</h2>
 
                 <p className="mt-1 text-xs text-slate-400">
                   Frequently used clinic actions
@@ -598,13 +522,10 @@ export default function ClinicDashboard() {
               </div>
             </div>
 
-            {/* Clinic Profile */}
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="font-bold text-slate-900">
-                    Clinic Profile
-                  </h2>
+                  <h2 className="font-bold text-slate-900">Clinic Profile</h2>
 
                   <p className="mt-1 text-xs text-slate-400">
                     Your registered clinic information
@@ -629,30 +550,20 @@ export default function ClinicDashboard() {
                 <ProfileRow
                   icon={UserCircle}
                   label="Administrator"
-                  value={clinic.ownerName || "Not provided"}
+                  value={clinic.ownerName}
                 />
 
-                <ProfileRow
-                  icon={Phone}
-                  label="Phone"
-                  value={clinic.phone || "Not provided"}
-                />
+                <ProfileRow icon={Phone} label="Phone" value={clinic.phone} />
 
                 <ProfileRow
                   icon={MapPin}
                   label="Location"
-                  value={
-                    [clinic.city, clinic.state]
-                      .filter(Boolean)
-                      .join(", ") ||
-                    "Not provided"
-                  }
+                  value={`${clinic.city}, ${clinic.state}`}
                 />
               </div>
             </div>
           </section>
 
-          {/* Verification */}
           <section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
             <div className="flex items-start gap-4">
               <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white">
@@ -666,11 +577,8 @@ export default function ClinicDashboard() {
 
                 <p className="mt-1 text-xs leading-5 text-amber-700">
                   Your clinic account is currently{" "}
-                  <strong>
-                    {clinic.status || "PENDING"}
-                  </strong>
-                  . Admin verification may be required
-                  before all clinic features become available.
+                  <strong>{clinic.status}</strong>. Admin verification may be
+                  required before all clinic features become available.
                 </p>
               </div>
             </div>
@@ -681,13 +589,7 @@ export default function ClinicDashboard() {
   );
 }
 
-function SidebarItem({
-  icon: Icon,
-  label,
-  active = false,
-  to,
-  onClick,
-}) {
+function SidebarItem({ icon: Icon, label, active = false, to, onClick }) {
   return (
     <Link
       to={to}
@@ -737,9 +639,7 @@ function ProfileRow({ icon: Icon, label, value }) {
           {label}
         </p>
 
-        <p className="truncate text-sm font-semibold text-slate-700">
-          {value}
-        </p>
+        <p className="truncate text-sm font-semibold text-slate-700">{value}</p>
       </div>
     </div>
   );

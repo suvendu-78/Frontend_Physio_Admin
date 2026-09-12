@@ -63,9 +63,8 @@ const DoctorLogin = () => {
         setLoading(false);
         return;
       }
-
       setLoading(false);
-      setShowSuccessPopup(true);
+      navigate("/doctor/dashboard");
     } catch (error) {
       setLoading(false);
       setError("Something went wrong. Please try again.");

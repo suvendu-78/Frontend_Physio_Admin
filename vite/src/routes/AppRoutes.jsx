@@ -26,7 +26,8 @@ import ClinicForgotPassword from "../pages/clinic/ClinicForgotPassword";
 import ClinicDashboard from "../pages/clinic/ClinicDashboard";
 import DoctorDocuments from "../pages/doctor/DoctorDocuments";
 import DoctorVerificationStatus from "../pages/doctor/DoctorVerificationStatus";
-
+import Onboard from "../pages/admin/onboard.jsx";
+import ProviderDetails from "../pages/admin/ViewDV.jsx";
 import ClinicDocuments from "../pages/clinic/ClinicDocuments";
 import ClinicVerificationStatus from "../pages/clinic/ClinicVerificationStatus";
 export default function AppRoutes() {
@@ -40,9 +41,9 @@ export default function AppRoutes() {
 
         {/* Authentication */}
         <Route path="/admin/login" element={<AdminLogin />} />
-
+        <Route path="/providerDetails" element={<ProviderDetails />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
-
+        <Route path="/admin/onboard" element={<Onboard />} />
         <Route
           path="/admin/forgot-password"
           element={<AdminForgotPassword />}
