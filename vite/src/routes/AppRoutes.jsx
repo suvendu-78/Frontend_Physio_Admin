@@ -30,6 +30,7 @@ import Onboard from "../pages/admin/onboard.jsx";
 import ProviderDetails from "../pages/admin/ViewDV.jsx";
 import ClinicDocuments from "../pages/clinic/ClinicDocuments";
 import ClinicVerificationStatus from "../pages/clinic/ClinicVerificationStatus";
+import ClinicDetails from "../pages/admin/viewdataClinic.jsx";
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -48,6 +49,7 @@ export default function AppRoutes() {
           path="/admin/forgot-password"
           element={<AdminForgotPassword />}
         />
+        <Route path="/admin/clinic" element={<ClinicDetails />}></Route>
         {/* =====================================================
     DOCTOR
 ===================================================== */}

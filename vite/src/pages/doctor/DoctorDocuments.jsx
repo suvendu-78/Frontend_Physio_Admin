@@ -348,7 +348,7 @@ export default function ClinicDocuments() {
         <div className="flex h-full flex-col">
           <div className="flex h-20 items-center border-b border-slate-100 px-5">
             <Link
-              to="/clinic/dashboard"
+              to="/doctor/dashboard"
               className="flex items-center gap-3"
               onClick={() => setMobileOpen(false)}
             >
@@ -388,7 +388,7 @@ export default function ClinicDocuments() {
             <SidebarItem
               icon={LayoutDashboard}
               label="Dashboard"
-              to="/clinic/dashboard"
+              to="/doctor/dashboard"
               onClick={() => setMobileOpen(false)}
             />
 
