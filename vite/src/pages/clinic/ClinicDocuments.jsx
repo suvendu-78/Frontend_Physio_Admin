@@ -284,6 +284,29 @@ export default function ClinicDocuments() {
     100,
     Math.round((completedItems / totalItems) * 100),
   );
+  const handleLogouts = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/pattner/clinicLogout",
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Logged out successfully");
+        navigate("/clinic/login");
+      } else {
+        alert(data?.message || "Logout failed");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Something went wrong during logout");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -411,6 +434,7 @@ export default function ClinicDocuments() {
             <Link
               to="/clinic/login"
               className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-500 transition hover:bg-red-50 hover:text-red-600"
+              onClick={handleLogouts}
             >
               <LogOut className="h-4 w-4" />
               Logout

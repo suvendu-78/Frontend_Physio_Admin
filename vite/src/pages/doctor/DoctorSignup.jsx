@@ -54,20 +54,20 @@
 //     setSuccess("");
 
 //     const doctorData = {
-//       fullName: fullNameRef.current.value,
-//       email: emailRef.current.value,
-//       phone: phoneRef.current.value,
+//       fullName: fullNameRef.current.value.trim(),
+//       email: emailRef.current.value.trim(),
+//       phone: phoneRef.current.value.trim(),
 
-//       registrationNumber: registrationNumberRef.current.value,
-//       qualification: qualificationRef.current.value,
-//       specialization: specializationRef.current.value,
-//       experience: experienceRef.current.value,
+//       registrationNumber: registrationNumberRef.current.value.trim(),
+//       qualification: qualificationRef.current.value.trim(),
+//       specialization: specializationRef.current.value.trim(),
+//       experience: experienceRef.current.value.trim(),
 
-//       clinicName: clinicNameRef.current.value,
-//       address: addressRef.current.value,
-//       city: cityRef.current.value,
-//       state: stateRef.current.value,
-//       pincode: pincodeRef.current.value,
+//       clinicName: clinicNameRef.current.value.trim(),
+//       address: addressRef.current.value.trim(),
+//       city: cityRef.current.value.trim(),
+//       state: stateRef.current.value.trim(),
+//       pincode: pincodeRef.current.value.trim(),
 
 //       Password: passwordRef.current.value,
 //       confirmPassword: confirmPasswordRef.current.value,
@@ -76,23 +76,91 @@
 
 //     console.log("Doctor Data:", doctorData);
 
-//     if (
-//       !doctorData.fullName ||
-//       !doctorData.email ||
-//       !doctorData.phone ||
-//       !doctorData.Password ||
-//       !doctorData.confirmPassword
-//     ) {
-//       setError("Please fill in all required personal information.");
+//     const requiredFields = [
+//       {
+//         name: "Full Name",
+//         value: doctorData.fullName,
+//       },
+//       {
+//         name: "Email Address",
+//         value: doctorData.email,
+//       },
+//       {
+//         name: "Phone Number",
+//         value: doctorData.phone,
+//       },
+//       {
+//         name: "Medical Registration Number",
+//         value: doctorData.registrationNumber,
+//       },
+//       {
+//         name: "Qualification",
+//         value: doctorData.qualification,
+//       },
+//       {
+//         name: "Specialization",
+//         value: doctorData.specialization,
+//       },
+//       {
+//         name: "Years of Experience",
+//         value: doctorData.experience,
+//       },
+//       {
+//         name: "Clinic / Hospital Name",
+//         value: doctorData.clinicName,
+//       },
+//       {
+//         name: "Practice Address",
+//         value: doctorData.address,
+//       },
+//       {
+//         name: "City",
+//         value: doctorData.city,
+//       },
+//       {
+//         name: "State",
+//         value: doctorData.state,
+//       },
+//       {
+//         name: "Pincode",
+//         value: doctorData.pincode,
+//       },
+//       {
+//         name: "Password",
+//         value: doctorData.Password,
+//       },
+//       {
+//         name: "Confirm Password",
+//         value: doctorData.confirmPassword,
+//       },
+//     ];
+
+//     const missingFields = requiredFields
+//       .filter((field) => !field.value)
+//       .map((field) => field.name);
+
+//     if (missingFields.length > 0) {
+//       setError(
+//         `Please fill in the following required fields: ${missingFields.join(
+//           ", ",
+//         )}.`,
+//       );
+
 //       return;
 //     }
 
-//     if (
-//       !doctorData.registrationNumber ||
-//       !doctorData.qualification ||
-//       !doctorData.specialization
-//     ) {
-//       setError("Please complete your professional information.");
+//     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(doctorData.email)) {
+//       setError("Please enter a valid email address.");
+//       return;
+//     }
+
+//     if (!/^\d{10}$/.test(doctorData.phone)) {
+//       setError("Please enter a valid 10-digit phone number.");
+//       return;
+//     }
+
+//     if (!/^\d{6}$/.test(doctorData.pincode)) {
+//       setError("Please enter a valid 6-digit pincode.");
 //       return;
 //     }
 
@@ -103,16 +171,6 @@
 
 //     if (doctorData.Password !== doctorData.confirmPassword) {
 //       setError("Passwords do not match.");
-//       return;
-//     }
-
-//     if (!/^\d{10}$/.test(doctorData.phone)) {
-//       setError("Please enter a valid 10-digit phone number.");
-//       return;
-//     }
-
-//     if (doctorData.pincode && !/^\d{6}$/.test(doctorData.pincode)) {
-//       setError("Please enter a valid 6-digit pincode.");
 //       return;
 //     }
 
@@ -136,8 +194,28 @@
 //       console.log("Server Response:", data);
 
 //       if (!response.ok) {
-//         setError(data.message || "Doctor registration failed.");
+//         const serverMessage = data?.message || "";
+
+//         const doctorAlreadyExists =
+//           response.status === 409 ||
+//           /already exists|already registered|duplicate|email.*exist|doctor.*exist/i.test(
+//             serverMessage,
+//           );
+
+//         if (doctorAlreadyExists) {
+//           setLoading(false);
+
+//           window.alert("Doctor already exists. Please login.");
+
+//           return;
+//         }
+
 //         setLoading(false);
+
+//         setError(
+//           serverMessage || "Doctor registration failed. Please try again.",
+//         );
+
 //         return;
 //       }
 
@@ -152,8 +230,10 @@
 //       }, 1200);
 //     } catch (error) {
 //       console.log("Doctor signup error:", error);
-//       setError("Something went wrong. Please try again.");
+
 //       setLoading(false);
+
+//       setError("Something went wrong. Please try again.");
 //     }
 //   };
 
@@ -311,6 +391,7 @@
 //                     icon={Award}
 //                     inputRef={experienceRef}
 //                     min="0"
+//                     required
 //                   />
 //                 </div>
 //               </div>
@@ -328,6 +409,7 @@
 //                     placeholder="Enter clinic or hospital name"
 //                     icon={Building2}
 //                     inputRef={clinicNameRef}
+//                     required
 //                   />
 
 //                   <InputField
@@ -335,6 +417,7 @@
 //                     placeholder="Bhubaneswar"
 //                     icon={MapPin}
 //                     inputRef={cityRef}
+//                     required
 //                   />
 
 //                   <InputField
@@ -342,6 +425,7 @@
 //                     placeholder="Odisha"
 //                     icon={MapPin}
 //                     inputRef={stateRef}
+//                     required
 //                   />
 
 //                   <InputField
@@ -350,6 +434,7 @@
 //                     icon={MapPin}
 //                     inputRef={pincodeRef}
 //                     maxLength={6}
+//                     required
 //                   />
 
 //                   <div className="md:col-span-2">
@@ -358,6 +443,7 @@
 //                       placeholder="Enter your complete practice address"
 //                       icon={MapPin}
 //                       inputRef={addressRef}
+//                       required
 //                     />
 //                   </div>
 //                 </div>
@@ -579,7 +665,6 @@
 // };
 
 // export default DoctorSignup;
-
 import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -637,7 +722,7 @@ const DoctorSignup = () => {
 
     const doctorData = {
       fullName: fullNameRef.current.value.trim(),
-      email: emailRef.current.value.trim(),
+      email: emailRef.current.value.trim().toLowerCase(),
       phone: phoneRef.current.value.trim(),
 
       registrationNumber: registrationNumberRef.current.value.trim(),
@@ -655,8 +740,6 @@ const DoctorSignup = () => {
       confirmPassword: confirmPasswordRef.current.value,
       role: "doctor",
     };
-
-    console.log("Doctor Data:", doctorData);
 
     const requiredFields = [
       {
@@ -722,37 +805,53 @@ const DoctorSignup = () => {
       .map((field) => field.name);
 
     if (missingFields.length > 0) {
-      setError(
-        `Please fill in the following required fields: ${missingFields.join(
-          ", ",
-        )}.`,
-      );
+      const message = `Please fill in: ${missingFields.join(", ")}`;
+
+      setError(message);
+      window.alert(message);
 
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(doctorData.email)) {
       setError("Please enter a valid email address.");
+      window.alert("Please enter a valid email address.");
+
       return;
     }
 
     if (!/^\d{10}$/.test(doctorData.phone)) {
       setError("Please enter a valid 10-digit phone number.");
+      window.alert("Please enter a valid 10-digit phone number.");
+
       return;
     }
 
     if (!/^\d{6}$/.test(doctorData.pincode)) {
       setError("Please enter a valid 6-digit pincode.");
+      window.alert("Please enter a valid 6-digit pincode.");
+
+      return;
+    }
+
+    if (Number(doctorData.experience) < 0) {
+      setError("Experience cannot be negative.");
+      window.alert("Experience cannot be negative.");
+
       return;
     }
 
     if (doctorData.Password.length < 8) {
       setError("Password must contain at least 8 characters.");
+      window.alert("Password must contain at least 8 characters.");
+
       return;
     }
 
     if (doctorData.Password !== doctorData.confirmPassword) {
       setError("Passwords do not match.");
+      window.alert("Passwords do not match.");
+
       return;
     }
 
@@ -771,51 +870,81 @@ const DoctorSignup = () => {
         },
       );
 
-      const data = await response.json();
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.log("Response is not JSON");
+      }
 
       console.log("Server Response:", data);
+      console.log("Status:", response.status);
 
       if (!response.ok) {
-        const serverMessage = data?.message || "";
+        const serverMessage =
+          data?.message || data?.error || "Doctor registration failed.";
 
-        const doctorAlreadyExists =
+        const messageLower = serverMessage.toLowerCase();
+
+        const alreadyExists =
           response.status === 409 ||
-          /already exists|already registered|duplicate|email.*exist|doctor.*exist/i.test(
-            serverMessage,
-          );
+          messageLower.includes("already exists") ||
+          messageLower.includes("already registered") ||
+          messageLower.includes("duplicate") ||
+          messageLower.includes("email already") ||
+          messageLower.includes("phone already") ||
+          messageLower.includes("doctor already") ||
+          messageLower.includes("user already");
 
-        if (doctorAlreadyExists) {
+        if (alreadyExists) {
           setLoading(false);
 
-          window.alert("Doctor already exists. Please login.");
+          setError(
+            "This doctor already exists. Please use a different email or phone number.",
+          );
+
+          window.alert(
+            "Doctor already exists!\n\nPlease use a different email or phone number.",
+          );
 
           return;
         }
 
         setLoading(false);
-
-        setError(
-          serverMessage || "Doctor registration failed. Please try again.",
-        );
+        setError(serverMessage);
+        window.alert(serverMessage);
 
         return;
       }
+
+      setLoading(false);
 
       setSuccess(
         "Doctor account created successfully. Redirecting to login...",
       );
 
-      setLoading(false);
+      window.alert(
+        "Doctor account created successfully!\n\nRedirecting to login...",
+      );
 
       setTimeout(() => {
         navigate("/doctor/login");
-      }, 1200);
+      }, 1000);
     } catch (error) {
-      console.log("Doctor signup error:", error);
+      console.error("Doctor signup error:", error);
 
       setLoading(false);
 
-      setError("Something went wrong. Please try again.");
+      setError(
+        "Unable to connect to server. Please check your internet/server connection.",
+      );
+
+      window.alert(
+        "Unable to connect to server.\n\nPlease check whether your backend server is running.",
+      );
+
+      return;
     }
   };
 

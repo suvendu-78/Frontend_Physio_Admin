@@ -31,6 +31,7 @@ import ProviderDetails from "../pages/admin/ViewDV.jsx";
 import ClinicDocuments from "../pages/clinic/ClinicDocuments";
 import ClinicVerificationStatus from "../pages/clinic/ClinicVerificationStatus";
 import ClinicDetails from "../pages/admin/viewdataClinic.jsx";
+import DocumentVerification from "../pages/doctor/documentStatus.jsx";
 export default function AppRoutes() {
   return (
     <BrowserRouter>
@@ -50,9 +51,6 @@ export default function AppRoutes() {
           element={<AdminForgotPassword />}
         />
         <Route path="/admin/clinic" element={<ClinicDetails />}></Route>
-        {/* =====================================================
-    DOCTOR
-===================================================== */}
 
         <Route path="/doctor/signup" element={<DoctorSignup />} />
 
@@ -81,7 +79,10 @@ export default function AppRoutes() {
         />
 
         <Route path="/doctor/documents" element={<DoctorDocuments />} />
-
+        <Route
+          path="/DocumentVerification"
+          element={<DocumentVerification />}
+        />
         <Route
           path="/doctor/verification-status"
           element={<DoctorVerificationStatus />}
