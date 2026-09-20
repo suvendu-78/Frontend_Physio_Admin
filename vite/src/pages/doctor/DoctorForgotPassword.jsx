@@ -34,7 +34,7 @@ const DoctorForgotPassword = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/pattner_Forgetpassword",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/pattner_Forgetpassword",
         {
           method: "POST",
           headers: {

@@ -108,7 +108,7 @@ function SidebarContent({ onNavigate }) {
   const handleLogout = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/onboard/adminLogout",
+        "https://physio-backend-sand.vercel.app/api/v1/onboard/adminLogout",
         {
           method: "POST",
           credentials: "include",

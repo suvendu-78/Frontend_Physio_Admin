@@ -365,7 +365,7 @@ export default function ClinicLogin() {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/clinicLogin",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/clinicLogin",
         {
           method: "POST",
           headers: {

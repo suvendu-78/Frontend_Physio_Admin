@@ -44,7 +44,7 @@ const AdminSignup = () => {
     console.log(formData);
     try {
       const data = await fetch(
-        "http://localhost:8000/api/v1/onboard/adminsignup",
+        "https://physio-backend-sand.vercel.app/api/v1/onboard/adminsignup",
         {
           method: "POST",
           headers: {

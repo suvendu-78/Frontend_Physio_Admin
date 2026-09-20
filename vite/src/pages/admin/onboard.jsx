@@ -854,7 +854,7 @@ export default function Onboard() {
   const fetchClinics = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/onboard/clinicpendingData",
+        "https://physio-backend-sand.vercel.app/api/v1/onboard/clinicpendingData",
       );
 
       const info = await response.json();

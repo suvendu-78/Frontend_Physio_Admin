@@ -72,7 +72,7 @@ export default function ClinicDashboard() {
   const data = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/getclinic",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/getclinic",
         {
           method: "GET",
           credentials: "include",
@@ -107,14 +107,10 @@ export default function ClinicDashboard() {
     data();
   }, []);
 
-  const handleLogout = () => {
-    window.location.href = "/clinic/login";
-  };
-
   const handleLogouts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/clinicLogout",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/clinicLogout",
         {
           method: "POST",
           credentials: "include",
@@ -197,19 +193,19 @@ export default function ClinicDashboard() {
               onClick={() => setMobileOpen(false)}
             />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={CalendarDays}
               label="Appointments"
               to="/clinic/appointments"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={Users}
               label="Patients"
               to="/clinic/patients"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <SidebarItem
               icon={Stethoscope}
@@ -218,12 +214,12 @@ export default function ClinicDashboard() {
               onClick={() => setMobileOpen(false)}
             />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={IndianRupee}
               label="Payments"
               to="/clinic/payments"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <SidebarItem
               icon={FileText}
@@ -234,12 +230,12 @@ export default function ClinicDashboard() {
 
             <div className="my-4 border-t border-slate-100" />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={Building2}
               label="Clinic Profile"
               to="/clinic/profile"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <SidebarItem
               icon={Settings}

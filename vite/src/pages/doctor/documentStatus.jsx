@@ -22,7 +22,7 @@ export default function DocumentVerification() {
     const fetchVerificationStatus = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/api/v1/pattner/doctor/document-verification",
+          "https://physio-backend-sand.vercel.app/api/v1/pattner/doctor/document-verification",
           {
             method: "GET",
             credentials: "include",

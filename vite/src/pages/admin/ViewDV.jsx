@@ -183,7 +183,7 @@ export default function ProviderDetails() {
       setActionLoading(true);
 
       const response = await fetch(
-        `http://localhost:8000/api/v1/pattner/doctor/status/${provider._id}`,
+        `https://physio-backend-sand.vercel.app/api/v1/pattner/doctor/status/${provider._id}`,
         {
           method: "PATCH",
           headers: {

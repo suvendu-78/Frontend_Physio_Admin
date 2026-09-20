@@ -88,7 +88,7 @@ export default function ClinicSignup() {
     };
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/pattnersignup",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/pattnersignup",
         {
           method: "POST",
           headers: {

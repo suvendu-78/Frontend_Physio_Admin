@@ -3,7 +3,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function TherapistSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
-
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
@@ -36,17 +35,13 @@ export default function TherapistSkeleton() {
       <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {[1, 2, 3, 4].map((item) => (
-            <Skeleton
-              key={item}
-              className="h-10 rounded-xl"
-            />
+            <Skeleton key={item} className="h-10 rounded-xl" />
           ))}
         </div>
       </div>
 
       {/* Therapist cards */}
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-
         {[1, 2, 3, 4, 5, 6].map((item) => (
           <div
             key={item}
@@ -72,9 +67,7 @@ export default function TherapistSkeleton() {
             <Skeleton className="mt-4 h-9 w-full rounded-xl" />
           </div>
         ))}
-
       </div>
-
     </div>
   );
 }

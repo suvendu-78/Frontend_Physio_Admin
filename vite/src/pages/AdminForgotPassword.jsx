@@ -35,7 +35,7 @@ const AdminForgotPassword = () => {
     ///admin_Forgetpassword
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/onboard/admin_Forgetpassword",
+        "https://physio-backend-sand.vercel.app/api/v1/onboard/admin_Forgetpassword",
         {
           method: "POST",
           headers: {

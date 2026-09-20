@@ -493,7 +493,7 @@ export default function Dashboard() {
       setError("");
 
       const response = await fetch(
-        "http://localhost:8000/api/v1/onboard/findAdmin",
+        "https://physio-backend-sand.vercel.app/api/v1/onboard/findAdmin",
         {
           method: "GET",
           credentials: "include",

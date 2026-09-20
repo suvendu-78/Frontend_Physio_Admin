@@ -40,7 +40,7 @@ const DoctorDashboard = () => {
       setError("");
 
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/finddoctor",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/finddoctor",
         {
           method: "GET",
           credentials: "include",
@@ -183,7 +183,7 @@ const DoctorDashboard = () => {
   const handleLogouts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/doctorLogout",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/doctorLogout",
         {
           method: "POST",
           credentials: "include",
@@ -251,9 +251,9 @@ const DoctorDashboard = () => {
 
           <SidebarItem icon={Stethoscope} label="Dashboard" active />
 
-          <SidebarItem icon={CalendarDays} label="Appointments" />
+          {/* <SidebarItem icon={CalendarDays} label="Appointments" />
 
-          <SidebarItem icon={Users} label="Patients" />
+          <SidebarItem icon={Users} label="Patients" /> */}
 
           <SidebarItem
             icon={FileCheck}
@@ -269,9 +269,9 @@ const DoctorDashboard = () => {
             Account
           </p>
 
-          <SidebarItem icon={Bell} label="Notifications" />
+          {/* <SidebarItem icon={Bell} label="Notifications" />
 
-          <SidebarItem icon={UserCircle} label="Profile" />
+          <SidebarItem icon={UserCircle} label="Profile" /> */}
 
           <SidebarItem icon={Settings} label="Settings" />
         </nav>

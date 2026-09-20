@@ -94,7 +94,7 @@ export default function DoctorDocuments() {
   const fetchDoctor = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/finddoctor",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/finddoctor",
         {
           method: "GET",
           credentials: "include",
@@ -179,7 +179,7 @@ export default function DoctorDocuments() {
   const handleLogout = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/doctorLogout",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/doctorLogout",
         {
           method: "POST",
           credentials: "include",
@@ -380,7 +380,7 @@ export default function DoctorDocuments() {
       formData.append("experienceCertificate", documents.experienceCertificate);
 
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/doctor_dv",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/doctor_dv",
         {
           method: "POST",
           credentials: "include",
@@ -456,7 +456,7 @@ export default function DoctorDocuments() {
   const handleLogouts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/doctorLogout",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/doctorLogout",
         {
           method: "POST",
           credentials: "include",
@@ -549,12 +549,12 @@ export default function DoctorDocuments() {
               onClick={() => setMobileOpen(false)}
             />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={CalendarDays}
               label="Appointments"
               to="/doctor/appointments"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <SidebarItem
               icon={Users}
@@ -562,31 +562,31 @@ export default function DoctorDocuments() {
               to="/doctor/patients"
               onClick={() => setMobileOpen(false)}
             />
-
+            {/* 
             <SidebarItem
               icon={IndianRupee}
               label="Payments"
               to="/doctor/payments"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={Bell}
               label="Notifications"
               to="/doctor/notifications"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <p className="mb-3 mt-8 px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
               Account
             </p>
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={UserCircle}
               label="Profile"
               to="/doctor/profile"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <SidebarItem
               icon={FileText}

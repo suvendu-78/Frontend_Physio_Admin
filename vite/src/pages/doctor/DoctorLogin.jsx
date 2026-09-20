@@ -43,7 +43,7 @@ const DoctorLogin = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/doctor_Login",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/doctor_Login",
         {
           method: "POST",
           headers: {

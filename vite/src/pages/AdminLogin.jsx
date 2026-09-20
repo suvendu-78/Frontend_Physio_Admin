@@ -66,7 +66,7 @@ const AdminLogin = () => {
       };
 
       const response = await fetch(
-        "http://localhost:8000/api/v1/onboard/aminLogin",
+        "https://physio-backend-sand.vercel.app/api/v1/onboard/aminLogin",
         {
           method: "POST",
           headers: {

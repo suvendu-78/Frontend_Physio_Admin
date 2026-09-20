@@ -160,7 +160,7 @@ export default function ClinicDocuments() {
       });
 
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/cliniDv",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/cliniDv",
         {
           method: "POST",
           body: formData,
@@ -287,7 +287,7 @@ export default function ClinicDocuments() {
   const handleLogouts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/pattner/clinicLogout",
+        "https://physio-backend-sand.vercel.app/api/v1/pattner/clinicLogout",
         {
           method: "POST",
           credentials: "include",
@@ -370,19 +370,19 @@ export default function ClinicDocuments() {
               onClick={() => setMobileOpen(false)}
             />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={CalendarDays}
               label="Appointments"
               to="/clinic/appointments"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={Users}
               label="Patients"
               to="/clinic/patients"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <SidebarItem
               icon={Stethoscope}
@@ -391,19 +391,19 @@ export default function ClinicDocuments() {
               onClick={() => setMobileOpen(false)}
             />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={IndianRupee}
               label="Payments"
               to="/clinic/payments"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={Bell}
               label="Notifications"
               to="/clinic/notifications"
               onClick={() => setMobileOpen(false)}
-            />
+            /> */}
 
             <div className="my-4 border-t border-slate-100" />
 
@@ -425,7 +425,7 @@ export default function ClinicDocuments() {
             <SidebarItem
               icon={Settings}
               label="Settings"
-              to="/clinic/settings"
+              // to="/clinic/settings"
               onClick={() => setMobileOpen(false)}
             />
           </nav>

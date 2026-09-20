@@ -25,7 +25,7 @@ export default function ClinicDetails() {
   const fetchClinic = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/onboard/clinicpendingData",
+        "https://physio-backend-sand.vercel.app/api/v1/onboard/clinicpendingData",
       );
 
       const result = await response.json();
@@ -60,7 +60,7 @@ export default function ClinicDetails() {
       setActionLoading(true);
 
       const response = await fetch(
-        `http://localhost:8000/api/v1/pattner/clinic/status/${clinic._id}`,
+        `https://physio-backend-sand.vercel.app/api/v1/pattner/clinic/status/${clinic._id}`,
         {
           method: "PATCH",
           headers: {
@@ -109,7 +109,7 @@ export default function ClinicDetails() {
       setActionLoading(true);
 
       const response = await fetch(
-        `http://localhost:8000/api/v1/pattner/clinic/status/${clinic._id}`,
+        `https://physio-backend-sand.vercel.app/api/v1/pattner/clinic/status/${clinic._id}`,
         {
           method: "PATCH",
           headers: {
