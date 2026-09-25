@@ -40,7 +40,8 @@ const DoctorForgotPassword = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          // credentials: "include",
+          credentials: "include",
+          // credentials: true,
           body: JSON.stringify(cleanEmail),
         },
       );

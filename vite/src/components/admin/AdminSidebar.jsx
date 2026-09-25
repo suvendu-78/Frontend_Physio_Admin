@@ -111,7 +111,7 @@ function SidebarContent({ onNavigate }) {
         "https://physio-backend-sand.vercel.app/api/v1/onboard/adminLogout",
         {
           method: "POST",
-          credentials: "include",
+          credentials: true,
         },
       );
 

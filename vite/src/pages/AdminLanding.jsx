@@ -19,9 +19,7 @@ const AdminLanding = () => {
   return (
     <div className="min-h-screen bg-[#f7fbfb] text-slate-900">
 
-      {/* =========================================================
-          NAVBAR
-      ========================================================= */}
+     
 
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8">
